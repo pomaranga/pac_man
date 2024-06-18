@@ -48,7 +48,6 @@ class PacMan:
             self.xdir = self.next_xdir
             self.ydir = self.next_ydir
 
-        # Continuous movement
         self.x += self.xdir * self.speed
         self.y += self.ydir * self.speed
 
