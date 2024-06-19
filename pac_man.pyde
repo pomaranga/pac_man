@@ -1,33 +1,6 @@
 GRID_SIZE = 30
 cols, rows = 28, 31
 
-def setup():
-    global cols, rows, pacMan
-    size(840, 930)
-    cols, rows = width // gridSize, height // gridSize
-    pacMan = PacMan(int(cols / 2-1), int(rows -9))
-
-def draw():
-    background(0)
-    stroke(100) 
-    for i in range(cols):
-        line(i * GRID_SIZE, 0, i * GRID_SIZE, height)
-    for j in range(rows):
-        line(0, j * GRID_SIZE, width, j * GRID_SIZE)
-    
-    pacMan.show()
-    pacMan.move()
-
-def keyPressed():
-    if key == 'w' or key == 'W':
-        pacMan.change_direction(0, -1)
-    elif key == 's' or key == 'S':
-        pacMan.change_direction(0, 1)
-    elif key == 'a' or key == 'A':
-        pacMan.change_direction(-1, 0)
-    elif key == 'd' or key == 'D':
-        pacMan.change_direction(1, 0)
-
 class PacMan:
     def __init__(self, x, y):
         self.x = x * GRID_SIZE
@@ -63,3 +36,31 @@ class PacMan:
     def direction(self, xdirection, ydirection):
         self.next_xdirection = xdirection
         self.next_ydirection = ydirection
+
+
+def setup():
+    global cols, rows, pacMan
+    size(840, 930)
+    cols, rows = width // gridSize, height // gridSize
+    pacMan = PacMan(int(cols / 2-1), int(rows -9))
+
+def draw():
+    background(0)
+    stroke(100) 
+    for i in range(cols):
+        line(i * GRID_SIZE, 0, i * GRID_SIZE, height)
+    for j in range(rows):
+        line(0, j * GRID_SIZE, width, j * GRID_SIZE)
+    
+    pacMan.show()
+    pacMan.move()
+
+def keyPressed():
+    if key == 'w' or key == 'W':
+        pacMan.change_direction(0, -1)
+    elif key == 's' or key == 'S':
+        pacMan.change_direction(0, 1)
+    elif key == 'a' or key == 'A':
+        pacMan.change_direction(-1, 0)
+    elif key == 'd' or key == 'D':
+        pacMan.change_direction(1, 0)
