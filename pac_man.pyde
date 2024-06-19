@@ -16,7 +16,7 @@ class PacMan:
         ellipse(self.x + GRID_SIZE, self.y + GRID_SIZE, GRID_SIZE, GRID_SIZE)
 
     def move(self):
-        if self.x % GRID_SIZE == 0 and self.y % gridSize == 0:
+        if self.x % GRID_SIZE == 0 and self.y % GRID_SIZE == 0:
             self.xdirection = self.next_xdirection
             self.ydirection = self.next_ydirection
 
@@ -41,7 +41,7 @@ class PacMan:
 def setup():
     global cols, rows, pacMan
     size(840, 930)
-    cols, rows = width // gridSize, height // gridSize
+    cols, rows = width // GRID_SIZE, height // GRID_SIZE
     pacMan = PacMan(int(cols / 2-1), int(rows -9))
 
 def draw():
