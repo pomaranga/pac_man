@@ -57,10 +57,10 @@ def draw():
 
 def keyPressed():
     if key == 'w' or key == 'W':
-        pacMan.change_direction(0, -1)
+        pacMan.dir(0, -1)
     elif key == 's' or key == 'S':
-        pacMan.change_direction(0, 1)
+        pacMan.dir(0, 1)
     elif key == 'a' or key == 'A':
-        pacMan.change_direction(-1, 0)
+        pacMan.dir(-1, 0)
     elif key == 'd' or key == 'D':
-        pacMan.change_direction(1, 0)
+        pacMan.dir(1, 0)
