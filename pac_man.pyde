@@ -4,7 +4,7 @@ pacMan = None
 
 def setup():
     global cols, rows, pacMan
-    size(400, 400)
+    size(600, 400)
     cols, rows = width // gridSize, height // gridSize
     pacMan = PacMan(int(cols / 2), int(rows / 2))
 
