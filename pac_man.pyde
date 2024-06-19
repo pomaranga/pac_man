@@ -1,12 +1,12 @@
-gridSize = 20
-cols, rows = 0, 0
+gridSize = 30
+cols, rows = 28, 31
 pacMan = None
 
 def setup():
     global cols, rows, pacMan
-    size(600, 400)
+    size(840, 930)
     cols, rows = width // gridSize, height // gridSize
-    pacMan = PacMan(int(cols / 2), int(rows / 2))
+    pacMan = PacMan(int(cols / 2-1), int(rows -9))
 
 def draw():
     background(0)
@@ -33,7 +33,7 @@ class PacMan:
     def __init__(self, x, y):
         self.x = x * gridSize
         self.y = y * gridSize
-        self.speed = 2 
+        self.speed = 3 
         self.xdir = 0
         self.ydir = 0
         self.next_xdir = 0
@@ -41,7 +41,7 @@ class PacMan:
 
     def show(self):
         fill(255, 255, 0)
-        ellipse(self.x + gridSize / 2, self.y + gridSize / 2, gridSize, gridSize)
+        ellipse(self.x + gridSize, self.y + gridSize, gridSize, gridSize)
 
     def move(self):
         if self.x % gridSize == 0 and self.y % gridSize == 0:
