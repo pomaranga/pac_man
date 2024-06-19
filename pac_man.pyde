@@ -33,7 +33,7 @@ class PacMan:
         elif self.y >= height:
             self.y = 0
 
-    def direction(self, xdirection, ydirection):
+    def dir(self, xdirection, ydirection):
         self.next_xdirection = xdirection
         self.next_ydirection = ydirection
 
