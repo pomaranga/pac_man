@@ -1,6 +1,6 @@
 GRID_SIZE = 30
 cols, rows = 28, 31
-
+#poprawki by Gabrysia
 class PacMan:
     def __init__(self, x, y):
         self.x = x * GRID_SIZE
@@ -37,7 +37,7 @@ class PacMan:
         self.next_xdirection = xdirection
         self.next_ydirection = ydirection
 
-
+#poprawki by oliwia
 def setup():
     global cols, rows, pacMan
     size(840, 930)
