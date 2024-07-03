@@ -36,13 +36,37 @@ class PacMan:
     def dir(self, xdirection, ydirection):
         self.next_xdirection = xdirection
         self.next_ydirection = ydirection
+        
+        
+class Coin:
+    def __init__(self, x, y):
+        self.x = x * GRID_SIZE
+        self.y = y * GRID_SIZE
+        self.collected = False
+
+    def show(self):
+        if not self.collected:
+            fill(255, 255, 255)
+            ellipse(self.x, self.y, GRID_SIZE/3, GRID_SIZE/3)
+
+    def collect(self, pacman):
+        if dist(self.x, self.y, pacman.x+GRID_SIZE, pacman.y+GRID_SIZE) < GRID_SIZE:
+            self.collected = True        
+    
 
 #poprawki by oliwia
 def setup():
-    global cols, rows, pacMan
+    global cols, rows, pacMan, coins
     size(840, 930)
+    coins=[]
     cols, rows = width // GRID_SIZE, height // GRID_SIZE
     pacMan = PacMan(int(cols / 2-1), int(rows -9))
+    
+    
+    for i in range(1,cols):
+        for j in range(1,rows):
+            #if i%2==0 and j%2!=0:
+                coins.append(Coin(i, j))
 
 def draw():
     background(0)
@@ -54,6 +78,16 @@ def draw():
     
     pacMan.show()
     pacMan.move()
+    
+    
+    for coin in coins:
+        coin.collect(pacMan)
+        coin.show()
+    
+    
+    img=loadImage("maze01.png")       
+    image(img,0,0)
+    
 
 def keyPressed():
     if key == 'w' or key == 'W':
