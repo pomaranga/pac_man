@@ -10,6 +10,7 @@ class PacMan:
         self.ydirection = 0
         self.next_xdirection = 0
         self.next_ydirection = 0
+        self.score = 0
 
     def show(self):
         fill(255, 255, 0)
@@ -51,12 +52,14 @@ class Coin:
 
     def collect(self, pacman):
         if dist(self.x, self.y, pacman.x+GRID_SIZE, pacman.y+GRID_SIZE) < GRID_SIZE:
-            self.collected = True        
+            if not self.collected:
+                self.collected = True
+                pacman.score += 1        
     
 
 #poprawki by oliwia
 def setup():
-    global cols, rows, pacMan, coins
+    global cols, rows, pacMan, coins, score
     size(840, 930)
     coins=[]
     cols, rows = width // GRID_SIZE, height // GRID_SIZE
@@ -69,6 +72,7 @@ def setup():
                 coins.append(Coin(i, j))
 
 def draw():
+    global score
     background(0)
     stroke(100) 
     for i in range(cols):
@@ -79,15 +83,19 @@ def draw():
     pacMan.show()
     pacMan.move()
     
-    
+    coins_collected = 0
     for coin in coins:
-        coin.collect(pacMan)
         coin.show()
-    
+        coin.collect(pacMan)
+        if coin.collected:
+            coins_collected += 1
     
     img=loadImage("maze01.png")       
     image(img,0,0)
     
+    fill(255)
+    textSize(20)
+    text("Score: " + str(pacMan.score), 10, height - 10)
 
 def keyPressed():
     if key == 'w' or key == 'W':
