@@ -143,7 +143,7 @@ def draw():
     
     pacMan.show() 
     pacMan.move()
-    
+
     for coin in coins:
         coin.show()
         coin.collect(pacMan)
@@ -160,10 +160,13 @@ def draw():
         if dist(ghost.x + GRID_SIZE / 2, ghost.y + GRID_SIZE / 2, pacMan.x + GRID_SIZE / 2, pacMan.y + GRID_SIZE / 2) < GRID_SIZE:
             game_over = True
             game_over_time = frameCount
- 
+ fill(50)
+    rect(50, height - 30, 120, 30)
+
     fill(255)
     textSize(20)
-    text("Score: " + str(pacMan.score), 10, height - 10)
+    text("Score: " + str(pacMan.score), 60, height - 10)
+#Score jest bardziej widoczny podczas gry
 
 def keyPressed():
     if key == 'w' or key == 'W':
