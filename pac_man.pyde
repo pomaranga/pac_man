@@ -68,7 +68,7 @@ class Ghost:
         self.next_xdirection = 1
         self.next_ydirection = 0
 
-  def show(self):
+    def show(self):
         fill(255, 0, 0)
         ellipse(self.x + GRID_SIZE / 2, self.y + GRID_SIZE / 2, GRID_SIZE, GRID_SIZE)
 
@@ -129,26 +129,24 @@ def draw():
     if game_over:
         if frameCount - game_over_time > game_over_duration:
             initialize_game()
-       else:
+        else:
            background(0)
-            fill(255)
-            textSize(64)
-            textAlign(CENTER, CENTER)
-            text("Game Over", width / 2, height / 2)
+           fill(255)
+           textSize(64)
+           textAlign(CENTER, CENTER)
+           text("Game Over", width / 2, height / 2)
         return
   
-     background(0)
-     image(img, 0, 0)
-     stroke(100)
+    background(0)
+    image(img, 0, 0)
+    stroke(100)
     
-     pacMan.show()
-     pacMan.move()
+    pacMan.show() 
+    pacMan.move()
     
     for coin in coins:
         coin.show()
         coin.collect(pacMan)
-        if coin.collected:
-            coins_collected += 1
 
     if frameCount % change_interval == 0:
         for i, ghost in enumerate(ghosts):
@@ -159,7 +157,7 @@ def draw():
         ghost.show()
         ghost.move()
 
-         if dist(ghost.x + GRID_SIZE / 2, ghost.y + GRID_SIZE / 2, pacMan.x + GRID_SIZE / 2, pacMan.y + GRID_SIZE / 2) < GRID_SIZE:
+        if dist(ghost.x + GRID_SIZE / 2, ghost.y + GRID_SIZE / 2, pacMan.x + GRID_SIZE / 2, pacMan.y + GRID_SIZE / 2) < GRID_SIZE:
             game_over = True
             game_over_time = frameCount
  
