@@ -160,7 +160,8 @@ def draw():
         if dist(ghost.x + GRID_SIZE / 2, ghost.y + GRID_SIZE / 2, pacMan.x + GRID_SIZE / 2, pacMan.y + GRID_SIZE / 2) < GRID_SIZE:
             game_over = True
             game_over_time = frameCount
- fill(50)
+            
+    fill(50)
     rect(50, height - 30, 120, 30)
 
     fill(255)
