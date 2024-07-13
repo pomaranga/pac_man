@@ -157,7 +157,7 @@ class Ghost:
                 self.xdirection = self.next_xdirection
                 self.ydirection = self.next_ydirection
 
-       if not self.kolizja(self.xdirection, self.ydirection):
+        if not self.kolizja(self.xdirection, self.ydirection):
             self.x += self.xdirection * self.speed
             self.y += self.ydirection * self.speed
 
@@ -204,20 +204,111 @@ def initialize_game():
             if map_data[j][i] == 0:  # place coins only in empty spaces
                 coins.append(Coin(i, j))
 
-    ghosts = []
-    for i in range(4):
-        x = (frameCount + i) % cols
-        y = (frameCount + i * 2) % rows
-        ghosts.append(Ghost(x, y))
+class Ghost:
+    def __init__(self, x, y, color, behavior, start_delay):
+        self.x = x * GRID_SIZE
+        self.y = y * GRID_SIZE
+        self.start_x = self.x
+        self.start_y = self.y
+        self.speed = 3
+        self.color = color
+        self.behavior = behavior
+        self.start_delay = start_delay  # Opóźnienie startu w klatkach
+        self.active = False
+        self.xdirection = 0
+        self.ydirection = 0
 
+    def show(self):
+        fill(self.color)
+        ellipse(self.x + GRID_SIZE / 2, self.y + GRID_SIZE / 2, GRID_SIZE, GRID_SIZE)
+
+    def move(self, pacman, blinky=None):
+        if frameCount > self.start_delay:
+            self.active = True  # Duch staje się aktywny po upływie start_delay
+        if not self.active:
+            return
+
+        # Wybieranie nowego kierunku na skrzyżowaniach
+        if self.x % GRID_SIZE == 0 and self.y % GRID_SIZE == 0:
+            self.choose_direction(pacman, blinky)
+        self.x += self.xdirection * self.speed
+        self.y += self.ydirection * self.speed
+        self.wrap_around()
+        
+        # Sprawdzenie kolizji i zmiana kierunku jeśli jest kolizja
+        if self.collision():
+            self.choose_direction(pacman, blinky)
+
+    def choose_direction(self, pacman, blinky):
+        directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+        target_x, target_y = self.get_target(pacman, blinky)
+        best_direction = None
+        min_distance = float('inf')
+
+
+        for d in directions:
+            next_x = self.x + d[0] * GRID_SIZE
+            next_y = self.y + d[1] * GRID_SIZE
+            if not self.collision(next_x, next_y):
+                distance = dist(next_x, next_y, target_x, target_y)
+                if distance < min_distance:
+                    min_distance = distance
+                    best_direction = d
+
+        if best_direction:
+            self.xdirection, self.ydirection = best_direction
+
+    def get_target(self, pacman, blinky):
+        if self.behavior == "blinky":
+            return pacman.x, pacman.y  # Blinky ściga bezpośrednio Pac-Mana
+        elif self.behavior == "pinky":
+            # Pinky celuje 4 kratki przed Pac-Manem
+            return pacman.x + pacman.xdirection * GRID_SIZE * 4, pacman.y + pacman.ydirection * GRID_SIZE * 4
+        elif self.behavior == "inky" and blinky:
+            # Inky celuje w pozycję względem Blinky'ego
+            target_x = pacman.x + pacman.xdirection * GRID_SIZE * 2
+            target_y = pacman.y + pacman.ydirection * GRID_SIZE * 2
+            return 2 * target_x - blinky.x, 2 * target_y - blinky.y
+        elif self.behavior == "clyde":
+            # Clyde ściga Pac-Mana, ale jeśli jest blisko, wraca do pozycji startowej
+            if dist(self.x, self.y, pacman.x, pacman.y) > GRID_SIZE * 8:
+                return pacman.x, pacman.y
+            return self.start_x, self.start_y
+        return self.x, self.y
+
+    def collision(self, x=None, y=None):
+        next_x = x if x is not None else self.x + self.xdirection * GRID_SIZE
+        next_y = y if y is not None else self.y + self.ydirection * GRID_SIZE
+        col = next_x // GRID_SIZE
+        row = next_y // GRID_SIZE
+        # Sprawdzenie kolizji z murem
+        if col < 0 or col >= cols or row < 0 or row >= rows or map_data[row][col] == 1:
+            return True
+        return False
+
+    def wrap_around(self):
+        self.x = (self.x + width) % width
+        self.y = (self.y + height) % height
+
+def initialize_game():
+    global cols, rows, pacMan, coins, ghosts, game_over, game_over_time
+    pacMan = PacMan(int(cols / 2 - 1), int(rows - 9))
+    coins = [Coin(i, j) for i in range(cols) for j in range(rows) if map_data[j][i] == 0]
+    ghost_start_x = int(cols / 2)
+    ghost_start_y = int(rows / 2-10) #Wiem że nie zaczynają tak jak w grze ale blokują się na spawnie :/
+    ghosts = [
+        Ghost(ghost_start_x, ghost_start_y, color(255, 0, 0), "blinky", 0),  # Blinky startuje od razu
+        Ghost(ghost_start_x, ghost_start_y, color(255, 184, 255), "pinky", 60),  # Pinky startuje po 1 sekundzie
+        Ghost(ghost_start_x, ghost_start_y, color(0, 255, 255), "inky", 120),  # Inky startuje po 2 sekundach
+        Ghost(ghost_start_x, ghost_start_y, color(255, 184, 82), "clyde", 180)  # Clyde startuje po 3 sekundach
+    ]
     game_over = False
     game_over_time = 0
 
-
 def draw():
-    global score, game_over, game_over_time
+    global game_over, game_over_time
     if game_over:
-        if frameCount - game_over_time > game_over_duration:
+        if frameCount - game_over_time > 180:
             initialize_game()
         else:
             background(0)
@@ -226,41 +317,35 @@ def draw():
             textAlign(CENTER, CENTER)
             text("Game Over", width / 2, height / 2)
         return
-  
+
     background(0)
-    # Draw walls
     for row in range(rows):
         for col in range(cols):
             if map_data[row][col] == 1:
                 fill(0, 0, 255)
                 rect(col * GRID_SIZE, row * GRID_SIZE, GRID_SIZE, GRID_SIZE)
     
-    pacMan.show() 
+    pacMan.show()
     pacMan.move()
-
     for coin in coins:
         coin.show()
         coin.collect(pacMan)
 
-    if frameCount % change_interval == 0:
-        for i, ghost in enumerate(ghosts):
-            xdirection, ydirection = pseudo_random_choice(i)
-            ghost.dir(xdirection, ydirection)
-
+    blinky = next((ghost for ghost in ghosts if ghost.behavior == "blinky"), None)
     for ghost in ghosts:
         ghost.show()
-        ghost.move()
-
+        ghost.move(pacMan, blinky)
         if dist(ghost.x + GRID_SIZE / 2, ghost.y + GRID_SIZE / 2, pacMan.x + GRID_SIZE / 2, pacMan.y + GRID_SIZE / 2) < GRID_SIZE:
             game_over = True
             game_over_time = frameCount
 
     fill(50)
     rect(50, height - 30, 120, 30)
-
     fill(255)
     textSize(20)
     text("Score: " + str(pacMan.score), 60, height - 10)
+
+
 
 def keyPressed():
     global pacMan
