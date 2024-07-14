@@ -133,77 +133,12 @@ class Coin:
             if not self.collected:
                 self.collected = True
                 pacman.score += 1        
-                
-class Ghost:
-    def __init__(self, x, y):
-        self.x = x * GRID_SIZE
-        self.y = y * GRID_SIZE
-        self.speed = 3
-        self.xdirection = 1
-        self.ydirection = 0
-        self.next_xdirection = 1
-        self.next_ydirection = 0
-
-    def show(self):
-        fill(255, 0, 0)
-        ellipse(self.x + GRID_SIZE / 2, self.y + GRID_SIZE / 2, GRID_SIZE, GRID_SIZE)
-
-    def move(self):
-        prev_x = self.x
-        prev_y = self.y
-
-        if self.x % GRID_SIZE == 0 and self.y % GRID_SIZE == 0:
-            if not self.kolizja(self.next_xdirection, self.next_ydirection):
-                self.xdirection = self.next_xdirection
-                self.ydirection = self.next_ydirection
-
-        if not self.kolizja(self.xdirection, self.ydirection):
-            self.x += self.xdirection * self.speed
-            self.y += self.ydirection * self.speed
-
-        if self.x < 0:
-            self.x = width - GRID_SIZE
-        elif self.x >= width:
-            self.x = 0
-
-        if self.y < 0:
-            self.y = height - GRID_SIZE
-        elif self.y >= height:
-            self.y = 0
-
-    def kolizja(self, xdirection, ydirection):
-        next_x = self.x + xdirection * GRID_SIZE
-        next_y = self.y + ydirection * GRID_SIZE
-        col = next_x // GRID_SIZE
-        row = next_y // GRID_SIZE
-        if col < 0 or col >= cols or row < 0 or row >= rows:
-            return True
-        return map_data[row][col] == 1
-
-    def dir(self, xdirection, ydirection):
-        self.next_xdirection = xdirection
-        self.next_ydirection = ydirection
-        
-def pseudo_random_choice(index):
-    """Pseudo-random choice based on index and frameCount."""
-    return directions[(frameCount // change_interval + index) % len(directions)]
 
 def setup():
     global cols, rows, pacMan, coins, score, ghosts, img, game_over, game_over_time
     size(840, 930)
     initialize_game()
     
-def initialize_game():
-    global cols, rows, pacMan, coins, ghosts, img, game_over, game_over_time
-    coins = []
-    cols, rows = len(map_data[0]), len(map_data)
-    pacMan = PacMan(int(cols / 2 - 1), int(rows - 9))
-
-    for i in range(cols):
-        for j in range(rows):
-            if map_data[j][i] == 0:  # place coins only in empty spaces
-                coins.append(Coin(i, j))
-
 class Ghost:
     def __init__(self, x, y, color, behavior, start_delay):
         self.x = x * GRID_SIZE
@@ -244,7 +179,6 @@ class Ghost:
         target_x, target_y = self.get_target(pacman, blinky)
         best_direction = None
         min_distance = float('inf')
-
 
         for d in directions:
             next_x = self.x + d[0] * GRID_SIZE
